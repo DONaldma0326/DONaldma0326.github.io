@@ -1,6 +1,5 @@
 ---
 import { getCollection } from 'astro:content';
-import ContactCTA from '../components/ContactCTA.astro';
 import Hero from '../components/Hero.astro';
 import Pill from '../components/Pill.astro';
 import BaseLayout from '../layouts/BaseLayout.astro';
@@ -18,10 +17,23 @@ const posts = (await getCollection('blog')).sort(
 				tagline="Short updates, project notes, and learnings. Edit files in src/content/blog to publish."
 				align="start"
 			/>
+			<div class="sort-controls">
+				<label for="blog-sort">Sort:</label>
+				<select id="blog-sort">
+					<option value="newest">Newest</option>
+					<option value="oldest">Oldest</option>
+					<option value="title-asc">Title A-Z</option>
+					<option value="title-desc">Title Z-A</option>
+				</select>
+			</div>
 			<ul class="post-list">
 				{
 					posts.map((post) => (
-						<li class="post-card">
+						<li
+							class="post-card"
+							data-title={post.data.title.toLowerCase()}
+							data-date={post.data.publishDate.toISOString()}
+						>
 							<a href={`/blog/${post.id}/`}>
 								<div class="stack gap-2">
 									<h2>{post.data.title}</h2>
@@ -39,11 +51,50 @@ const posts = (await getCollection('blog')).sort(
 				}
 			</ul>
 		</main>
-		<ContactCTA />
 	</div>
 </BaseLayout>
 
+<script>
+	const sortSelect = document.getElementById('blog-sort');
+	const container = document.querySelector('.post-list');
+
+	if (sortSelect instanceof HTMLSelectElement && container instanceof HTMLElement) {
+		const sortItems = () => {
+			const items = Array.from(container.querySelectorAll('.post-card'));
+			const mode = sortSelect.value;
+			items.sort((a, b) => {
+				const titleA = (a.getAttribute('data-title') ?? '').toLowerCase();
+				const titleB = (b.getAttribute('data-title') ?? '').toLowerCase();
+				const dateA = new Date(a.getAttribute('data-date') ?? '').valueOf();
+				const dateB = new Date(b.getAttribute('data-date') ?? '').valueOf();
+				if (mode === 'oldest') return dateA - dateB;
+				if (mode === 'title-asc') return titleA.localeCompare(titleB);
+				if (mode === 'title-desc') return titleB.localeCompare(titleA);
+				return dateB - dateA;
+			});
+			items.forEach((item) => container.appendChild(item));
+		};
+		sortSelect.addEventListener('change', sortItems);
+	}
+</script>
+
 <style>
+	.sort-controls {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		color: var(--gray-300);
+	}
+
+	.sort-controls select {
+		border: 1px solid var(--gray-700);
+		border-radius: 0.5rem;
+		background-color: var(--gray-999);
+		color: var(--gray-100);
+		padding: 0.5rem 0.75rem;
+		font: inherit;
+	}
+
 	.post-list {
 		list-style: none;
 		padding: 0;

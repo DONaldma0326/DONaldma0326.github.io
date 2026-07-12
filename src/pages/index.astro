@@ -1,7 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
 import CallToAction from '../components/CallToAction.astro';
-import ContactCTA from '../components/ContactCTA.astro';
 import Grid from '../components/Grid.astro';
 import Hero from '../components/Hero.astro';
 import Icon from '../components/Icon.astro';
@@ -103,8 +102,6 @@ const posts = (await getCollection('blog'))
 				</div>
 			</section>
 		</main>
-
-		<ContactCTA />
 	</div>
 </BaseLayout>
 

@@ -39,6 +39,12 @@ const { title, description } = Astro.props;
 				--bg-image-subtle-1: var(--_placeholder-bg);
 				--bg-image-subtle-2: var(--_placeholder-bg);
 				--bg-image-footer: var(--_placeholder-bg);
+				--bg-purple-overlay: linear-gradient(
+					180deg,
+					rgba(149, 76, 233, 0.22) 0%,
+					rgba(78, 36, 154, 0.18) 55%,
+					rgba(42, 20, 92, 0.2) 100%
+				);
 				--bg-svg-blend-mode: overlay;
 				--bg-blend-mode: darken;
 				--bg-image-aspect-ratio: 2.25;
@@ -50,6 +56,12 @@ const { title, description } = Astro.props;
 			:root.theme-dark {
 				--bg-image-main: url('/assets/backgrounds/bg-main-dark-800w.jpg');
 				--bg-image-main-curves: url('/assets/backgrounds/bg-main-dark.svg');
+				--bg-purple-overlay: linear-gradient(
+					180deg,
+					rgba(150, 90, 245, 0.24) 0%,
+					rgba(93, 53, 188, 0.2) 55%,
+					rgba(56, 26, 129, 0.22) 100%
+				);
 				--bg-svg-blend-mode: darken;
 				--bg-blend-mode: lighten;
 			}
@@ -92,6 +104,7 @@ const { title, description } = Astro.props;
 				min-height: 100%;
 				isolation: isolate;
 				background:
+					/*purple-overlay*/ var(--bg-purple-overlay) top center / cover no-repeat,
 					/*noise*/
 					url('/assets/backgrounds/noise.png') top center/220px repeat,
 					/*footer*/ var(--bg-image-footer) bottom center/var(--bg-gradient-size) no-repeat,
@@ -99,6 +112,8 @@ const { title, description } = Astro.props;
 					/*header2*/ var(--bg-image-main) top center/var(--bg-gradient-size) no-repeat,
 					/*base*/ var(--gray-999);
 				background-blend-mode: /*noise*/
+					normal,
+					/*noise*/
 					overlay,
 					/*footer*/ var(--bg-blend-mode),
 					/*header1*/ var(--bg-svg-blend-mode),

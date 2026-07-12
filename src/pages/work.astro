@@ -1,6 +1,5 @@
 ---
 import { getCollection } from 'astro:content';
-import ContactCTA from '../components/ContactCTA.astro';
 import Grid from '../components/Grid.astro';
 import Hero from '../components/Hero.astro';
 import PortfolioPreview from '../components/PortfolioPreview.astro';
@@ -22,16 +21,70 @@ const projects = (await getCollection('projects')).sort(
 				tagline="A collection of things I built, shipped, and learned from."
 				align="start"
 			/>
+			<div class="sort-controls">
+				<label for="project-sort">Sort:</label>
+				<select id="project-sort">
+					<option value="newest">Newest</option>
+					<option value="oldest">Oldest</option>
+					<option value="title-asc">Title A-Z</option>
+					<option value="title-desc">Title Z-A</option>
+				</select>
+			</div>
 			<Grid variant="offset">
 				{
 					projects.map((project) => (
-						<li>
+						<li
+							class="project-item"
+							data-title={project.data.title.toLowerCase()}
+							data-date={project.data.publishDate.toISOString()}
+						>
 							<PortfolioPreview project={project} />
 						</li>
 					))
 				}
 			</Grid>
 		</main>
-		<ContactCTA />
 	</div>
 </BaseLayout>
+
+<script>
+	const sortSelect = document.getElementById('project-sort');
+	const container = document.querySelector('.grid');
+
+	if (sortSelect instanceof HTMLSelectElement && container instanceof HTMLElement) {
+		const sortItems = () => {
+			const items = Array.from(container.querySelectorAll('.project-item'));
+			const mode = sortSelect.value;
+			items.sort((a, b) => {
+				const titleA = (a.getAttribute('data-title') ?? '').toLowerCase();
+				const titleB = (b.getAttribute('data-title') ?? '').toLowerCase();
+				const dateA = new Date(a.getAttribute('data-date') ?? '').valueOf();
+				const dateB = new Date(b.getAttribute('data-date') ?? '').valueOf();
+				if (mode === 'oldest') return dateA - dateB;
+				if (mode === 'title-asc') return titleA.localeCompare(titleB);
+				if (mode === 'title-desc') return titleB.localeCompare(titleA);
+				return dateB - dateA;
+			});
+			items.forEach((item) => container.appendChild(item));
+		};
+		sortSelect.addEventListener('change', sortItems);
+	}
+</script>
+
+<style>
+	.sort-controls {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		color: var(--gray-300);
+	}
+
+	.sort-controls select {
+		border: 1px solid var(--gray-700);
+		border-radius: 0.5rem;
+		background-color: var(--gray-999);
+		color: var(--gray-100);
+		padding: 0.5rem 0.75rem;
+		font: inherit;
+	}
+</style>
