@@ -39,11 +39,12 @@ const { title, description } = Astro.props;
 				--bg-image-subtle-1: var(--_placeholder-bg);
 				--bg-image-subtle-2: var(--_placeholder-bg);
 				--bg-image-footer: var(--_placeholder-bg);
+				--bg-base-color: #edf8f0;
 				--bg-purple-overlay: linear-gradient(
 					180deg,
-					rgba(149, 76, 233, 0.22) 0%,
-					rgba(78, 36, 154, 0.18) 55%,
-					rgba(42, 20, 92, 0.2) 100%
+					rgba(52, 199, 89, 0.44) 0%,
+					rgba(28, 145, 74, 0.38) 55%,
+					rgba(18, 94, 52, 0.42) 100%
 				);
 				--bg-svg-blend-mode: overlay;
 				--bg-blend-mode: darken;
@@ -56,11 +57,12 @@ const { title, description } = Astro.props;
 			:root.theme-dark {
 				--bg-image-main: url('/assets/backgrounds/bg-main-dark-800w.jpg');
 				--bg-image-main-curves: url('/assets/backgrounds/bg-main-dark.svg');
+				--bg-base-color: #0f1f16;
 				--bg-purple-overlay: linear-gradient(
 					180deg,
-					rgba(150, 90, 245, 0.24) 0%,
-					rgba(93, 53, 188, 0.2) 55%,
-					rgba(56, 26, 129, 0.22) 100%
+					rgba(74, 222, 128, 0.36) 0%,
+					rgba(34, 197, 94, 0.32) 55%,
+					rgba(21, 128, 61, 0.36) 100%
 				);
 				--bg-svg-blend-mode: darken;
 				--bg-blend-mode: lighten;
@@ -110,9 +112,9 @@ const { title, description } = Astro.props;
 					/*footer*/ var(--bg-image-footer) bottom center/var(--bg-gradient-size) no-repeat,
 					/*header1*/ var(--bg-image-main-curves) top center/var(--bg-gradient-size) no-repeat,
 					/*header2*/ var(--bg-image-main) top center/var(--bg-gradient-size) no-repeat,
-					/*base*/ var(--gray-999);
+					/*base*/ var(--bg-base-color);
 				background-blend-mode: /*noise*/
-					normal,
+					multiply,
 					/*noise*/
 					overlay,
 					/*footer*/ var(--bg-blend-mode),
