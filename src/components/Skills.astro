@@ -43,6 +43,11 @@ import Icon from './Icon.astro';
 		color: var(--gray-400);
 	}
 
+	:global(:root.theme-dark) .skills h2,
+	:global(:root.theme-dark) .skills p {
+		color: #ffffff;
+	}
+
 	@media (min-width: 50em) {
 		.box {
 			border-radius: 1.5rem;

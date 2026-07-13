@@ -39,12 +39,18 @@ const { title, description } = Astro.props;
 				--bg-image-subtle-1: var(--_placeholder-bg);
 				--bg-image-subtle-2: var(--_placeholder-bg);
 				--bg-image-footer: var(--_placeholder-bg);
-				--bg-base-color: #edf8f0;
-				--bg-purple-overlay: linear-gradient(
+				--bg-base-color: #eef4ff;
+				--bg-top-glow: radial-gradient(
+					120% 90% at 50% 0%,
+					rgba(6, 182, 212, 0.22) 0%,
+					rgba(16, 185, 129, 0.14) 40%,
+					rgba(0, 0, 0, 0) 75%
+				);
+				--bg-color-overlay: linear-gradient(
 					180deg,
-					rgba(52, 199, 89, 0.44) 0%,
-					rgba(28, 145, 74, 0.38) 55%,
-					rgba(18, 94, 52, 0.42) 100%
+					rgba(6, 182, 212, 0.2) 0%,
+					rgba(16, 185, 129, 0.16) 50%,
+					rgba(15, 23, 42, 0.08) 100%
 				);
 				--bg-svg-blend-mode: overlay;
 				--bg-blend-mode: darken;
@@ -57,12 +63,18 @@ const { title, description } = Astro.props;
 			:root.theme-dark {
 				--bg-image-main: url('/assets/backgrounds/bg-main-dark-800w.jpg');
 				--bg-image-main-curves: url('/assets/backgrounds/bg-main-dark.svg');
-				--bg-base-color: #0f1f16;
-				--bg-purple-overlay: linear-gradient(
+				--bg-base-color: #060b14;
+				--bg-top-glow: radial-gradient(
+					120% 90% at 50% 0%,
+					rgba(6, 182, 212, 0.12) 0%,
+					rgba(16, 185, 129, 0.08) 40%,
+					rgba(0, 0, 0, 0) 75%
+				);
+				--bg-color-overlay: linear-gradient(
 					180deg,
-					rgba(74, 222, 128, 0.36) 0%,
-					rgba(34, 197, 94, 0.32) 55%,
-					rgba(21, 128, 61, 0.36) 100%
+					rgba(6, 182, 212, 0.12) 0%,
+					rgba(16, 185, 129, 0.1) 50%,
+					rgba(15, 23, 42, 0.32) 100%
 				);
 				--bg-svg-blend-mode: darken;
 				--bg-blend-mode: lighten;
@@ -106,21 +118,11 @@ const { title, description } = Astro.props;
 				min-height: 100%;
 				isolation: isolate;
 				background:
-					/*purple-overlay*/ var(--bg-purple-overlay) top center / cover no-repeat,
-					/*noise*/
-					url('/assets/backgrounds/noise.png') top center/220px repeat,
-					/*footer*/ var(--bg-image-footer) bottom center/var(--bg-gradient-size) no-repeat,
-					/*header1*/ var(--bg-image-main-curves) top center/var(--bg-gradient-size) no-repeat,
-					/*header2*/ var(--bg-image-main) top center/var(--bg-gradient-size) no-repeat,
+					/*top glow*/ var(--bg-top-glow),
+					/*global tint*/ var(--bg-color-overlay),
+					/*noise*/ url('/assets/backgrounds/noise.png') top center/220px repeat,
 					/*base*/ var(--bg-base-color);
-				background-blend-mode: /*noise*/
-					multiply,
-					/*noise*/
-					overlay,
-					/*footer*/ var(--bg-blend-mode),
-					/*header1*/ var(--bg-svg-blend-mode),
-					/*header2*/ normal,
-					/*base*/ normal;
+				background-blend-mode: screen, normal, overlay, normal;
 			}
 			@media (forced-colors: active) {
 				/* Deactivate custom backgrounds for high contrast users. */
