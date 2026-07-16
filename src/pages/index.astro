@@ -33,13 +33,6 @@ const posts = (await getCollection('blog'))
 						<Pill><Icon icon="pencil-line" size="1.33em" /> Technical Writing</Pill>
 					</div>
 				</Hero>
-
-				<img
-					alt="Portrait photo"
-					width="480"
-					height="620"
-					src="/assets/portrait.jpg"
-				/>
 			</header>
 
 			<Skills />
@@ -117,20 +110,9 @@ const posts = (await getCollection('blog'))
 		display: none;
 	}
 
-	.hero img {
-		aspect-ratio: 5 / 4;
-		object-fit: cover;
-		object-position: top;
-		border-radius: 1.5rem;
-		box-shadow: var(--shadow-md);
-	}
-
 	@media (min-width: 50em) {
 		.hero {
-			display: grid;
-			grid-template-columns: 6fr 4fr;
 			padding-inline: 2.5rem;
-			gap: 3.75rem;
 		}
 
 		.roles {
@@ -140,11 +122,6 @@ const posts = (await getCollection('blog'))
 			flex-wrap: wrap;
 		}
 
-		.hero img {
-			aspect-ratio: 3 / 4;
-			border-radius: 4.5rem;
-			object-fit: cover;
-		}
 	}
 
 	.section {
