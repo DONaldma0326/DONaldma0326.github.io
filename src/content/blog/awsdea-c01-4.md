@@ -5,7 +5,6 @@ publishDate: 2026-06-14
 tags:
   - "Exam Prep"
   - "AWS"
-  - "Data Engineer"
 ---
 
 ## AWS Glue

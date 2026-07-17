@@ -5,7 +5,6 @@ publishDate: 2026-06-13
 tags:
   - "Project"
   - "RAG"
-  - "Real-Time Data Pipeline"
 ---
 
 To begin our project, we first need to acquire the necessary data. I have decided to use RSS to implement this feature, as it provides a reliable way to subscribe to URLs and receive updated feeds.

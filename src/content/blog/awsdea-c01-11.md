@@ -5,7 +5,6 @@ publishDate: 2026-07-04
 tags:
   - "Exam Prep"
   - "AWS"
-  - "Data Engineer"
 ---
 
 ## Amazon DynamoDB

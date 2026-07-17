@@ -7,6 +7,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 const posts = (await getCollection('blog')).sort(
 	(a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf(),
 );
+
+const allTags = [...new Set(posts.flatMap((p) => p.data.tags))].sort();
 ---
 
 <BaseLayout title="Blog | DONaldMa" description="Notes and updates">
@@ -17,14 +19,23 @@ const posts = (await getCollection('blog')).sort(
 				tagline="Short updates, project notes, and learnings."
 				align="start"
 			/>
-			<div class="sort-controls">
-				<label for="blog-sort">Sort:</label>
-				<select id="blog-sort">
-					<option value="newest">Newest</option>
-					<option value="oldest">Oldest</option>
-					<option value="title-asc">Title A-Z</option>
-					<option value="title-desc">Title Z-A</option>
-				</select>
+			<div class="controls">
+				<div class="filter-controls">
+					<label for="blog-filter">Filter:</label>
+					<select id="blog-filter">
+						<option value="all">All</option>
+						{allTags.map((tag) => <option value={tag}>{tag}</option>)}
+					</select>
+				</div>
+				<div class="sort-controls">
+					<label for="blog-sort">Sort:</label>
+					<select id="blog-sort">
+						<option value="newest">Newest</option>
+						<option value="oldest">Oldest</option>
+						<option value="title-asc">Title A-Z</option>
+						<option value="title-desc">Title Z-A</option>
+					</select>
+				</div>
 			</div>
 			<ul class="post-list">
 				{
@@ -33,6 +44,7 @@ const posts = (await getCollection('blog')).sort(
 							class="post-card"
 							data-title={post.data.title.toLowerCase()}
 							data-date={post.data.publishDate.toISOString()}
+							data-tags={post.data.tags.join(',')}
 						>
 							<a href={`/blog/${post.id}/`}>
 								<div class="stack gap-2">
@@ -56,13 +68,24 @@ const posts = (await getCollection('blog')).sort(
 
 <script>
 	const sortSelect = document.getElementById('blog-sort');
+	const filterSelect = document.getElementById('blog-filter');
 	const container = document.querySelector('.post-list');
 
-	if (sortSelect instanceof HTMLSelectElement && container instanceof HTMLElement) {
-		const sortItems = () => {
-			const items = Array.from(container.querySelectorAll('.post-card'));
+	if (
+		sortSelect instanceof HTMLSelectElement &&
+		filterSelect instanceof HTMLSelectElement &&
+		container instanceof HTMLElement
+	) {
+		const allItems = Array.from(container.querySelectorAll('.post-card'));
+		const update = () => {
+			const tag = filterSelect.value;
 			const mode = sortSelect.value;
-			items.sort((a, b) => {
+			const filtered = allItems.filter((item) => {
+				if (tag === 'all') return true;
+				const tags = (item.getAttribute('data-tags') ?? '').split(',');
+				return tags.includes(tag);
+			});
+			filtered.sort((a, b) => {
 				const titleA = (a.getAttribute('data-title') ?? '').toLowerCase();
 				const titleB = (b.getAttribute('data-title') ?? '').toLowerCase();
 				const dateA = new Date(a.getAttribute('data-date') ?? '').valueOf();
@@ -72,21 +95,31 @@ const posts = (await getCollection('blog')).sort(
 				if (mode === 'title-desc') return titleB.localeCompare(titleA);
 				return dateB - dateA;
 			});
-			items.forEach((item) => container.appendChild(item));
+			container.replaceChildren(...filtered);
 		};
-		sortSelect.addEventListener('change', sortItems);
+		sortSelect.addEventListener('change', update);
+		filterSelect.addEventListener('change', update);
 	}
 </script>
 
 <style>
-	.sort-controls {
+	.controls {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+		align-items: center;
+	}
+
+	.sort-controls,
+	.filter-controls {
 		display: flex;
 		align-items: center;
 		gap: 0.75rem;
 		color: var(--gray-300);
 	}
 
-	.sort-controls select {
+	.sort-controls select,
+	.filter-controls select {
 		border: 1px solid var(--gray-700);
 		border-radius: 0.5rem;
 		background-color: var(--gray-999);

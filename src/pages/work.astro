@@ -8,6 +8,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 const projects = (await getCollection('projects')).sort(
 	(a, b) => b.data.publishDate.valueOf() - a.data.publishDate.valueOf(),
 );
+
+const allTags = [...new Set(projects.flatMap((p) => p.data.tags))].sort();
 ---
 
 <BaseLayout
@@ -21,14 +23,23 @@ const projects = (await getCollection('projects')).sort(
 				tagline="A collection of things I built, shipped, and learned from."
 				align="start"
 			/>
-			<div class="sort-controls">
-				<label for="project-sort">Sort:</label>
-				<select id="project-sort">
-					<option value="newest">Newest</option>
-					<option value="oldest">Oldest</option>
-					<option value="title-asc">Title A-Z</option>
-					<option value="title-desc">Title Z-A</option>
-				</select>
+			<div class="controls">
+				<div class="filter-controls">
+					<label for="project-filter">Filter:</label>
+					<select id="project-filter">
+						<option value="all">All</option>
+						{allTags.map((tag) => <option value={tag}>{tag}</option>)}
+					</select>
+				</div>
+				<div class="sort-controls">
+					<label for="project-sort">Sort:</label>
+					<select id="project-sort">
+						<option value="newest">Newest</option>
+						<option value="oldest">Oldest</option>
+						<option value="title-asc">Title A-Z</option>
+						<option value="title-desc">Title Z-A</option>
+					</select>
+				</div>
 			</div>
 			<Grid variant="offset">
 				{
@@ -37,6 +48,7 @@ const projects = (await getCollection('projects')).sort(
 							class="project-item"
 							data-title={project.data.title.toLowerCase()}
 							data-date={project.data.publishDate.toISOString()}
+							data-tags={project.data.tags.join(',')}
 						>
 							<PortfolioPreview project={project} />
 						</li>
@@ -49,13 +61,24 @@ const projects = (await getCollection('projects')).sort(
 
 <script>
 	const sortSelect = document.getElementById('project-sort');
+	const filterSelect = document.getElementById('project-filter');
 	const container = document.querySelector('.grid');
 
-	if (sortSelect instanceof HTMLSelectElement && container instanceof HTMLElement) {
-		const sortItems = () => {
-			const items = Array.from(container.querySelectorAll('.project-item'));
+	if (
+		sortSelect instanceof HTMLSelectElement &&
+		filterSelect instanceof HTMLSelectElement &&
+		container instanceof HTMLElement
+	) {
+		const allItems = Array.from(container.querySelectorAll('.project-item'));
+		const update = () => {
+			const tag = filterSelect.value;
 			const mode = sortSelect.value;
-			items.sort((a, b) => {
+			const filtered = allItems.filter((item) => {
+				if (tag === 'all') return true;
+				const tags = (item.getAttribute('data-tags') ?? '').split(',');
+				return tags.includes(tag);
+			});
+			filtered.sort((a, b) => {
 				const titleA = (a.getAttribute('data-title') ?? '').toLowerCase();
 				const titleB = (b.getAttribute('data-title') ?? '').toLowerCase();
 				const dateA = new Date(a.getAttribute('data-date') ?? '').valueOf();
@@ -65,21 +88,31 @@ const projects = (await getCollection('projects')).sort(
 				if (mode === 'title-desc') return titleB.localeCompare(titleA);
 				return dateB - dateA;
 			});
-			items.forEach((item) => container.appendChild(item));
+			container.replaceChildren(...filtered);
 		};
-		sortSelect.addEventListener('change', sortItems);
+		sortSelect.addEventListener('change', update);
+		filterSelect.addEventListener('change', update);
 	}
 </script>
 
 <style>
-	.sort-controls {
+	.controls {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+		align-items: center;
+	}
+
+	.sort-controls,
+	.filter-controls {
 		display: flex;
 		align-items: center;
 		gap: 0.75rem;
 		color: var(--gray-300);
 	}
 
-	.sort-controls select {
+	.sort-controls select,
+	.filter-controls select {
 		border: 1px solid var(--gray-700);
 		border-radius: 0.5rem;
 		background-color: var(--gray-999);

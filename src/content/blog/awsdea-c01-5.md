@@ -5,7 +5,6 @@ publishDate: 2026-06-27
 tags:
   - "Exam Prep"
   - "AWS"
-  - "Data Engineer"
 ---
 
 ## Amazon Athena

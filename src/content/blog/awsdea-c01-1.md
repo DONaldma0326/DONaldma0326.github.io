@@ -5,7 +5,6 @@ publishDate: 2026-06-10
 tags:
   - "Exam Prep"
   - "AWS"
-  - "Data Engineer"
 ---
 
 ## 🎯 Introduction
